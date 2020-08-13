@@ -1,6 +1,8 @@
 package au.cmcmarkets.ticker.core.di.module
 
+import au.cmcmarkets.ticker.BuildConfig
 import au.cmcmarkets.ticker.data.api.BitcoinApi
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -9,6 +11,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -16,7 +19,7 @@ class NetworkModule {
 
     companion object {
         //TODO("Update this to the base URL")
-        private const val API_BASE_URL = ""
+        private const val API_BASE_URL = "https://blockchain.info"
     }
 
     private val httpLoggingInterceptor: HttpLoggingInterceptor by lazy {
@@ -37,9 +40,19 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
-            .build()
+        if(BuildConfig.DEBUG) {
+            return OkHttpClient.Builder()
+                .addNetworkInterceptor(StethoInterceptor())
+                .addInterceptor(httpLoggingInterceptor)
+                .connectTimeout(10L, TimeUnit.SECONDS)
+                .writeTimeout(10L, TimeUnit.SECONDS)
+                .readTimeout(10L, TimeUnit.SECONDS)
+                .build()
+        } else {
+            return OkHttpClient.Builder()
+                .addInterceptor(httpLoggingInterceptor)
+                .build()
+        }
     }
 
     @Provides
