@@ -72,7 +72,7 @@ You can use extension functions in `utils` packages if you need to do price form
 
 Polling is the key function of the screen and it should resume and pause according to the lifecycle events `onResume/onStart` and `onPause/onStop`. You could use Fragment's callback events or lifecycle observer for this.
 
-Please **do not use databinding libary** for presentation. Databiding is not suitable for our usecase and we want to see your ui handling.
+Please **do not use databinding library** for presentation. Databiding is not suitable for our use case and we want to see your UI handling.
 
 It would be great to handle device rotation and process death for better experience. It's up to you what/how to save and you could use persistence or in-memory storage.
 
